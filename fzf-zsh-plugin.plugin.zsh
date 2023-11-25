@@ -35,7 +35,6 @@ function _fzf_debugOut() {
 # file searching.
 
 # Determine where fzf is installed
-set -x
 local fzf_conf
 
 if _fzf_has fzf; then
