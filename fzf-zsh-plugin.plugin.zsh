@@ -35,21 +35,29 @@ function _fzf_debugOut() {
 # file searching.
 
 # Determine where fzf is installed
+set -x
 local fzf_conf
-if [[ -z "$FZF_PATH" ]]; then
-  FZF_PATH=~/.fzf
+
+if _fzf_has fzf; then
+  FZF_PATH="$(dirname $(which fzf))"
   fzf_conf=~/.fzf.zsh
-else
-  fzf_conf="$FZF_PATH/fzf.zsh"
+else 
+  if [[ -z "$FZF_PATH" ]]; then
+    FZF_PATH=~/.fzf
+    fzf_conf=~/.fzf.zsh
+  else
+    fzf_conf="$FZF_PATH/fzf.zsh"
+  fi
+
+  if [[ ! -d $FZF_PATH ]]; then
+    git clone --depth 1 https://github.com/junegunn/fzf.git $FZF_PATH
+    $FZF_PATH/install --bin
+  fi
 fi
+
 unset xdg_path
 
 # Install fzf into ~ if it hasn't already been installed.
-if [[ ! -d $FZF_PATH ]]; then
-  git clone --depth 1 https://github.com/junegunn/fzf.git $FZF_PATH
-  $FZF_PATH/install --bin
-fi
-
 # Install some default settings if user doesn't already have fzf
 # settings configured.
 if [[ ! -f $fzf_conf ]]; then
